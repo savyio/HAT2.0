@@ -7,6 +7,6 @@
 [submodule "marketsquare-client-scala-play"]
 	path = marketsquare-client-scala-play
 	url = git@github.com:Hub-of-all-Things/marketsquare-client-scala-play.git
-[submodule "frontend"]
-  	path = frontend
-   	url = git@github.com:Hub-of-all-Things/Rumpel.git
+[submodule "bsafe"]
+	path = bsafe
+	url = git@github.com:Hub-of-all-Things/b.safe.git
