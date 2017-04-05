@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="93px" height="92px" viewBox="0 0 93 92" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>icon - credit card</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon---credit-card">
+            <g id="Group-10" transform="translate(-37.000000, 0.000000)">
+                <text id="CREDIT-CARD" font-family="OpenSans-Bold, Open Sans" font-size="13" font-weight="bold" letter-spacing="1" fill="#005F89">
+                    <tspan x="36.2817383" y="92">CREDIT CARD</tspan>
+                </text>
+                <path d="M53,16 L116,16 L116,8 L53,8 L53,16 Z M53,56 L116,56 L116,32 L53,32 L53,56 Z M116.1,0 L52.9,0 C48.5155,0 45.0395,3.504375 45.0395,7.875 L45,55.125 C45,59.495625 48.5155,63 52.9,63 L116.1,63 C120.4845,63 124,59.495625 124,55.125 L124,7.875 C124,3.504375 120.4845,0 116.1,0 L116.1,0 Z" id="Page-1" fill="#0E6B92"></path>
+                <text id="CREDIT" font-family="OpenSans-Bold, Open Sans" font-size="13" font-weight="bold" line-spacing="23" letter-spacing="2" fill="#FFFFFF">
+                    <tspan x="56" y="26">CREDIT</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>
