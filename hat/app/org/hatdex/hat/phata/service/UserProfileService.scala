@@ -35,7 +35,7 @@ import org.hatdex.hat.resourceManagement.HatServer
 import org.hatdex.hat.utils.FutureTransformations
 import org.joda.time.LocalDateTime
 import play.api.{ Configuration, Logger }
-import play.api.libs.json.JsObject
+import play.api.libs.json.{ JsError, JsObject, JsSuccess }
 
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,58 +45,41 @@ class UserProfileService @Inject() (bundleService: BundleService, dataService: D
   private val logger = Logger(this.getClass)
   private implicit def hatServer2db(implicit hatServer: HatServer): Database = hatServer.db
 
-  def getPublicProfile()(implicit server: HatServer): Future[(Boolean, Map[String, Map[String, String]])] = {
-    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("rumpel", "profile")), None).map(_.headOption)
-    val eventualMaybeFacebookTable = bundleService.sourceDatasetTables(Seq(("facebook", "profile_picture")), None).map(_.headOption)
+  def getPublicProfile()(implicit server: HatServer): Future[(Boolean, Map[String, String])] = {
+    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("bheard", "profilet4")), None).map(_.headOption)
+    //    val eventualMaybeFacebookTable = bundleService.sourceDatasetTables(Seq(("facebook", "profile_picture")), None).map(_.headOption)
     val eventualProfileRecord = eventualMaybeProfileTable flatMap { maybeTable =>
       FutureTransformations.transform(maybeTable map getProfileTable)
     }
 
-    val eventualProfilePicture = eventualMaybeFacebookTable flatMap { maybeTable =>
-      FutureTransformations.transform(maybeTable map getProfileTable)
-    }
+    //    val eventualProfilePicture = eventualMaybeFacebookTable flatMap { maybeTable =>
+    //      FutureTransformations.transform(maybeTable map getProfileTable)
+    //    }
 
-    val eventualProfilePictureField = eventualProfilePicture map { maybeValueTable =>
-      maybeValueTable map { valueTable =>
-        val flattenedValues = flattenTableValues(valueTable)
-        ProfileField("fb_profile_picture", Map("url" -> (flattenedValues \ "url").asOpt[String].getOrElse("")), fieldPublic = true)
-      }
-    }
+    //    val eventualProfilePictureField = eventualProfilePicture map { maybeValueTable =>
+    //      maybeValueTable map { valueTable =>
+    //        val flattenedValues = flattenTableValues(valueTable)
+    //        ProfileField("fb_profile_picture", Map("url" -> (flattenedValues \ "url").asOpt[String].getOrElse("")), fieldPublic = true)
+    //      }
+    //    }
 
     val profile = for {
-      profilePictureField <- eventualProfilePictureField
+      //      profilePictureField <- eventualProfilePictureField
       valueTable <- eventualProfileRecord.map(_.get)
     } yield {
       val flattenedValues = flattenTableValues(valueTable)
-      // Profile is public by default
-      val publicProfile = !(flattenedValues \ "private").asOpt[String].contains("true")
 
-      val profileFields: Iterable[ProfileField] = flattenedValues match {
-        case profileObject: JsObject =>
-          profileObject.value collect {
-            case ("fb_profile_photo", value: JsObject) if profilePictureField.isDefined =>
-              val publicField = !(value \ "private").asOpt[String].contains("true")
-              profilePictureField.get.copy(fieldPublic = publicField)
-            case (fieldName, value: JsObject) =>
-              val publicField = !(value \ "private").asOpt[String].contains("true")
-              val profileFieldData: immutable.Map[String, String] = value.value.collect { case (k, v) if v.asOpt[String].isDefined => (k, v.as[String]) }.toMap
-              ProfileField(fieldName, profileFieldData, publicField)
-          }
-        case _ => Iterable()
+      // Profile is public by default
+      val publicProfile = !(flattenedValues \ "profilePrivate").asOpt[String].contains("true")
+      val profileFields: Map[String, String] = flattenedValues.validate[Map[String, String]] match {
+        case s: JsSuccess[Map[String, String]] => s.get
+        case e: JsError                        => Map()
       }
 
-      (publicProfile, profileFields.filter(_.fieldPublic))
+      (publicProfile, profileFields)
     }
 
-    val profilePublicFields = profile recover {
-      case e =>
-        (false, Iterable())
-    }
-
-    profilePublicFields map {
-      case (public, fields) =>
-        (public, formatProfile(fields.toSeq))
-    }
+    profile
   }
 
   private def getProfileTable(table: ApiDataTable)(implicit server: HatServer) = {

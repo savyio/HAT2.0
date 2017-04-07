@@ -69,8 +69,8 @@ class Phata @Inject() (
     }
 
     eventualProfileData map {
-      case (true, publicProfile, notables) => Ok(Json.toJson(PublicProfileResponse(true, Some(publicProfile), Some(notables))))
-      case (false, publicProfile, _)       => Ok(Json.toJson(PublicProfileResponse(false, None, None)))
+      case (true, publicProfile, _) => Ok(Json.toJson(PublicProfileResponse(true, Some(publicProfile), None)))
+      case (false, _, _)            => Ok(Json.toJson(PublicProfileResponse(false, None, None)))
     } recover {
       case e => Ok(Json.toJson(PublicProfileResponse(false, None, None)))
     }
