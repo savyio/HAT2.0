@@ -53,7 +53,7 @@ GET           /api/v2/system/status                       org.hatdex.hat.api.con
 GET           /assets/*file                               @controllers.Assets.versioned(path="/public", file: Asset)
 POST          /                                           org.hatdex.hat.phata.controllers.Authentication.login
 GET           /signin                                     org.hatdex.hat.phata.controllers.Authentication.signin
-GET           /hatlogin                                   org.hatdex.hat.phata.controllers.Authentication.hatLogin(name: String, redirect: String)
+GET           /hatlogin                                   org.hatdex.hat.phata.controllers.Authentication.hatLoginLegacySupport(name: String, redirect: String)
 GET           /logout                                     org.hatdex.hat.phata.controllers.Authentication.logout
 GET           /password                                   org.hatdex.hat.phata.controllers.Authentication.passwordChangeStart
 POST          /password                                   org.hatdex.hat.phata.controllers.Authentication.passwordChangeProcess
