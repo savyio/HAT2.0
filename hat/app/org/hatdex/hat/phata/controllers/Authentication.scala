@@ -63,6 +63,7 @@ class Authentication @Inject() (
     userProfileService: UserProfileService,
     usersService: UsersService,
     mailer: HatMailer,
+    wsClient: WSClient,
     notablesService: NotablesService,
     passwordHasherRegistry: PasswordHasherRegistry,
     tokenService: MailTokenService[MailTokenUser],
@@ -85,8 +86,11 @@ class Authentication @Inject() (
     Ok(phataViews.html.simpleLogin(LoginDetails.loginForm))
   }
 
-  def hatLoginLegacySupport(name: String, redirectUrl: String) = UserAwareAction {
-    Redirect(s"/#/hatlogin?name=$name&redirect=$redirectUrl")
+  def hatLoginLegacySupport(name: String, redirectUrl: String) = UserAwareAction { implicit request =>
+    val uri = wsClient.url(routes.Authentication.hatLoginLegacySupport(name, redirectUrl).absoluteURL()).uri
+    val newRedirectUrl = s"${uri.getScheme}://${uri.getAuthority}/#/hatlogin?${uri.getQuery}"
+    logger.debug(s"Redirect url from ${request.uri}: ${newRedirectUrl}")
+    Redirect(newRedirectUrl)
   }
 
   def hatLogin(name: String, redirectUrl: String) = UserAwareAction.async { implicit request =>
