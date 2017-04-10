@@ -45,6 +45,7 @@ import org.hatdex.hat.utils.HatMailer
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
+import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.{ Configuration, Logger }
 
@@ -82,6 +83,10 @@ class Authentication @Inject() (
 
   def signin: Action[AnyContent] = UserAwareAction { implicit request =>
     Ok(phataViews.html.simpleLogin(LoginDetails.loginForm))
+  }
+
+  def hatLoginLegacySupport(name: String, redirectUrl: String) = UserAwareAction {
+    Redirect(s"/#/hatlogin?name=$name&redirect=$redirectUrl")
   }
 
   def hatLogin(name: String, redirectUrl: String) = UserAwareAction.async { implicit request =>
