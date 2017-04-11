@@ -85,7 +85,7 @@ class Authentication @Inject() (
     Ok(phataViews.html.simpleLogin(LoginDetails.loginForm))
   }
 
-  def hatLoginLegacySupport(name: String, redirectUrl: String) = UserAwareAction {
+  def hatLoginLegacySupport(name: String, redirectUrl: String) = UserAwareAction { implicit request =>
     Redirect(s"/#/hatlogin?name=$name&redirect=$redirectUrl")
   }
 
