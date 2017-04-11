@@ -2,7 +2,7 @@
 
 set -e
 
-BUCKET="hat-cloud-formation-eu"
+BUCKET=${AWS_BUCKET:-hat-cloud-formation-eu}
 VERSION=`git log --format="%H" -n 1`
 APPLICATION_NAME="hat"
 
