@@ -3,4 +3,4 @@
 	url = https://github.com/Hub-of-all-Things/hat-database-schema.git
 [submodule "frontend"]
   	path = frontend
-   	url = git@github.com:Hub-of-all-Things/Rumpel.git
+   	url = git@github.com:Hub-of-all-Things/savy-browser.git
