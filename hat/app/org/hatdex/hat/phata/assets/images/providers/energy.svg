@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="150px" viewBox="0 0 150 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.2 (39069) - http://www.bohemiancoding.com/sketch -->
+    <title>energy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="energy" fill-rule="nonzero" fill="#14223E">
+            <g id="energy-icon" transform="translate(40.000000, 25.000000)">
+                <g id="Page-1">
+                    <path d="M70,63.5003752 C70,26.0155722 36.4918109,0 35.0466045,0 L35.0466045,14.1267355 C33.0426099,14.1267355 0,33.5684803 0,63.3138837 C0,86.0192308 19.9933422,99.3529109 35.0466045,99.3529109 C54.4806924,99.4 70,82.6623827 70,63.5003752 L70,63.5003752 Z M57.3701731,65.0389306 L35.0466045,72.032364 L34.4873502,72.2183893 L34.9533955,99.4 L12.5366178,65.0850872 L35,58.4184803 L34.9067909,30.7711069 L35.0466045,30.9575985 L57.3701731,65.0389306 Z" id="Fill-5"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
