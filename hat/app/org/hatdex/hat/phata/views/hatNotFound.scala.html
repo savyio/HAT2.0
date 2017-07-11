@@ -2,22 +2,22 @@
 
 <!DOCTYPE html>
 <html class="savy">
+
 <head>
 
   <title>Savy Account Available</title>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' rel='stylesheet'
-        type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Crete+Round:400i" rel="stylesheet">
   <meta name="viewport" content="width=device-width" />
 
   <style>
-
-    .html, body {
+    .html,
+    body {
       font-family: Arial, Helvetica, sans-serif;
     }
 
     .savy {
-      background: url(@routes.Assets.versioned('/images/savy-background.png'));
+      background: url(@routes.Assets.versioned("/images/savy-background.png"));
     }
 
     .header {
@@ -27,7 +27,7 @@
       justify-content: space-between;
     }
 
-    @media (min-width: 768px) {
+    @@media (min-width: 768px) {
       .header {
 
         height: 76px;
@@ -49,7 +49,7 @@
       height: 66px;
     }
 
-    @media (min-width: 768px) {
+    @@media (min-width: 768px) {
       .header__logo {
         height: 48px;
       }
@@ -59,7 +59,7 @@
       display: none;
     }
 
-    @media screen and (min-width: 768px) {
+    @@media screen and (min-width: 768px) {
       .header__strapline {
         display: block;
         text-transform: uppercase;
@@ -74,14 +74,14 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      margin-top:20px;
+      margin-top: 20px;
     }
 
     .header__button-login {
       display: none;
     }
 
-    @media screen and (min-width: 768px) {
+    @@media screen and (min-width: 768px) {
       .header__button-login {
         display: block;
         margin-right: 34px;
@@ -123,7 +123,7 @@
       margin-bottom: 20px;
     }
 
-    @media screen and (min-width: 992px) {
+    @@media screen and (min-width: 992px) {
       .header__button-why {
         border: 1px solid black;
         color: black;
@@ -148,13 +148,14 @@
       margin-bottom: 80px;
     }
 
-    @media (min-width: 768px) {
+    @@media (min-width: 768px) {
       .header__button-register {
         padding: 8px 48px;
       }
     }
 
-    .header__button-register:active, .header__button-register:hover {
+    .header__button-register:active,
+    .header__button-register:hover {
       background: white;
       color: black;
     }
@@ -162,10 +163,9 @@
     .hero {
       display: flex;
       justify-content: center;
-
     }
 
-    @media (min-width: 992px) {
+    @@media (min-width: 992px) {
       .hero {
         /*padding: 0;*/
         padding-left: 36px;
@@ -180,18 +180,16 @@
       width: 100%;
       border-radius: 8px;
       /*min-height: 480px;*/
-
     }
 
 
-    @media (min-width: 768px) {
+    @@media (min-width: 768px) {
       .hero__box {
         margin-top: 200px;
-
       }
     }
 
-    @media (min-width: 992px) {
+    @@media (min-width: 992px) {
       .hero__box {
         background-color: white;
 
@@ -201,10 +199,9 @@
 
     .hero__profile-image {
       display: none;
-
     }
 
-    @media (min-width: 992px) {
+    @@media (min-width: 992px) {
       .hero__profile-image {
         display: unset;
         width: 160px;
@@ -221,12 +218,12 @@
       margin-top: 60px;
       margin-bottom: 40px;
       color: white;
-      font-family: 'Crete Round', serif;
+      font-family: "Crete Round", serif;
       /*letter-spacing: 2px;*/
       font-size: 1.5em;
     }
 
-    @media (min-width: 992px) {
+    @@media (min-width: 992px) {
       .hero__name {
         color: black;
         margin-top: 86px;
@@ -284,13 +281,15 @@
       font-weight: 600;
       cursor: pointer;
     }
-
   </style>
+</head>
+
+<body>
 
   <div>
     <div class="header">
       <div class="header__logo-container">
-        <img class="header__logo" src="@routes.Assets.versioned('/images/Savy-logo-White-tall.png')">
+        <img class="header__logo" src="@routes.Assets.versioned("/images/Savy-logo-White-tall.png")">
         <p class="header__strapline">Your personal data account</p>
       </div>
 
@@ -302,8 +301,7 @@
 
     <div class="hero">
       <div class="hero__box">
-        <img class="hero__profile-image"
-             src="@routes.Assets.versioned('/images/user-account-icon.svg')">
+        <img class="hero__profile-image" src="@routes.Assets.versioned("/images/user-account-icon.svg")">
 
         <h1 class="hero__name">You’ve stumbled across an available<br><span class="savy-domain">Savy account domain</span></h1>
 
@@ -313,7 +311,5 @@
       </div>
     </div>
   </div>
-  </div>
 
-</head>
-<body>
+</body>
