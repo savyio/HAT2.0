@@ -1,122 +1,315 @@
 @()(implicit requestHeader: RequestHeader, messages: Messages)
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Hat Not Available</title>
-        <link rel="shortcut icon" type="image/svg" href="@routes.Assets.versioned("/images/hat-original.svg")">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' rel='stylesheet' type='text/css'>
-        <style>
-        body {
-            font-family: 'Open Sans Regular', sans-serif;
-            font-size: 16px;
-            font-weight: 100;
-            text-align: center;
-            padding-top: 3em;
-        }
+<html class="savy">
 
-        h1, h2, h3, h4, h5 {
-            font-family: 'Open Sans Condensed', sans-serif;
-        }
+<head>
 
-        .error-logo {
-            width: 100%;
-        }
+  <title>Savy Account Available</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Crete+Round:400i" rel="stylesheet">
+  <meta name="viewport" content="width=device-width" />
 
-        .error-logo img {
-            max-width: 50%;
-            max-height: 12em;
-        }
+  <style>
+    .html,
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-        .error-title {
-            font-size: 4.5em;
-            font-weight: lighter;
-        }
+    .savy {
+      background: url(@routes.Assets.versioned("/images/savy-background.png"));
+    }
 
-        .error-title .title-inline-img {
-            height: 1em;
-        }
+    .header {
+      margin-top: -20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        .error-title .title-inline-img img {
-            height: 1em;
-        }
+    @@media (min-width: 768px) {
+      .header {
 
-        .error-subtitle {
-            font-size: 1.6em;
-            font-weight: lighter;
-        }
+        height: 76px;
+        padding: 0 38px;
+        justify-content: space-between;
+        font-size: 16px;
+      }
+    }
 
-        .error-subtitle-action {
-            font-size: 1.6em;
-            font-weight: 600;
-            margin-bottom: 3em;
-        }
+    .savy-domain {
+      color: #1ec9cf;
+    }
 
-        .action {
-            width: 12em;
-            /*height: 3em;*/
-            margin-left: auto;
-            margin-right: auto;
-            background: #eeeeee;
-            border: 2px solid #cccccc;
+    .header__logo-container {
+      display: flex;
+    }
 
-            font-family: 'Open Sans Condensed', sans-serif;
-            padding-top: 0.3em;
-            padding-bottom: 0.3em;
-            font-size: 1.6em;
-            text-transform: uppercase;
-            color: #333333;
-            margin-bottom: 0.7em;
-        }
+    .header__logo {
+      height: 66px;
+    }
 
-        a {
-            text-decoration: none;
-        }
+    @@media (min-width: 768px) {
+      .header__logo {
+        height: 48px;
+      }
+    }
 
-        .action:hover {
-            color: white;
-            background: #444444;
-        }
+    .header__strapline {
+      display: none;
+    }
 
-        .action.action-dark {
-            color: white;
-            background: #444444;
-        }
+    @@media screen and (min-width: 768px) {
+      .header__strapline {
+        display: block;
+        text-transform: uppercase;
+        /*letter-spacing: 2px;*/
+        color: white;
+        margin: 26px 0 0 24px;
+        font-size: 16px;
+      }
+    }
 
-        .action.action-dark:hover {
-            color: #333333;
-            background: #eeeeee;
-        }
-        </style>
-    </head>
-    <body>
+    .header__nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 20px;
+    }
 
-        <div class="error-logo">
-            <img src="@routes.Assets.versioned("/images/502-page-icon.png")" alt="HAT world">
-        </div>
+    .header__button-login {
+      display: none;
+    }
 
-        <h1 class="error-title">
-            You've landed on a <span class="title-inline-img"><img src="@routes.Assets.versioned("/images/hat_logo.png")" alt="Hub of All Things"/></span>
-            Page!
-        </h1>
+    @@media screen and (min-width: 768px) {
+      .header__button-login {
+        display: block;
+        margin-right: 34px;
+        cursor: pointer;
+        color: white;
+        /*text-transform: uppercase;*/
+        /*letter-spacing: 2px;*/
+        text-decoration: none;
+        /*font-weight: bold;*/
+      }
+    }
 
-        <h3 class="error-subtitle">
-            The PHATA (Personal HAT address) has not yet been taken or is currently unavailable.</h3>
+    .header__button-register {
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid white;
+      padding: 4px 24px;
+      text-decoration: none;
+      /*text-transform: uppercase;*/
+      /*letter-spacing: 2px;*/
+      /*font-weight: bold;*/
+    }
 
-        <h3 class="error-subtitle-action">Grab it for yourself!</h3>
+    .header__button-why {
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid white;
+      padding: 12px 24px;
+      text-decoration: none;
+      /*text-transform: uppercase;*/
+      /*letter-spacing: 2px;*/
+      font-weight: bold;
+      display: block;
+      margin: 0 auto;
+      width: 60%;
 
-        <a href="https://hubofallthings.com/main/what-is-the-hat/">
-            <div class="action">
-                Learn about the HAT
-            </div>
-        </a>
+      margin-bottom: 20px;
+    }
 
-        <a href="https://hatters.hubofallthings.com">
-            <div class="action action-dark">
-                Get a HAT
-            </div>
-        </a>
+    @@media screen and (min-width: 992px) {
+      .header__button-why {
+        border: 1px solid black;
+        color: black;
+      }
+    }
 
-    </body>
+    .header__button-savy {
+      color: white;
+      background-color: #1ec9cf;
+      border-radius: 4px;
+      border: 1px solid #1ec9cf;
+      cursor: pointer;
+      padding: 12px 24px;
+      text-decoration: none;
+      /*text-transform: uppercase;*/
+      /*letter-spacing: 2px;*/
+      font-weight: bold;
+      display: block;
+      margin: 0 auto;
+      width: 60%;
 
-</html>
+      margin-bottom: 80px;
+    }
+
+    @@media (min-width: 768px) {
+      .header__button-register {
+        padding: 8px 48px;
+      }
+    }
+
+    .header__button-register:active,
+    .header__button-register:hover {
+      background: white;
+      color: black;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: center;
+    }
+
+    @@media (min-width: 992px) {
+      .hero {
+        /*padding: 0;*/
+        padding-left: 36px;
+        padding-right: 36px;
+      }
+    }
+
+    .hero__box {
+      text-align: center;
+      margin-top: 40px;
+      background-color: none;
+      width: 100%;
+      border-radius: 8px;
+      /*min-height: 480px;*/
+    }
+
+
+    @@media (min-width: 768px) {
+      .hero__box {
+        margin-top: 200px;
+      }
+    }
+
+    @@media (min-width: 992px) {
+      .hero__box {
+        background-color: white;
+
+        width: 50%;
+      }
+    }
+
+    .hero__profile-image {
+      display: none;
+    }
+
+    @@media (min-width: 992px) {
+      .hero__profile-image {
+        display: unset;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 8px solid white;
+        position: relative;
+        top: -80px;
+        background-color: white;
+      }
+    }
+
+    .hero__name {
+      margin-top: 60px;
+      margin-bottom: 40px;
+      color: white;
+      font-family: "Crete Round", serif;
+      /*letter-spacing: 2px;*/
+      font-size: 1.5em;
+    }
+
+    @@media (min-width: 992px) {
+      .hero__name {
+        color: black;
+        margin-top: 86px;
+        margin-bottom: 66px;
+        margin-top: -26px;
+        font-size: 2em;
+      }
+    }
+
+    .hero__name p {
+      font-size: 14px;
+      color: #9b9b9b;
+      margin: 0px;
+      padding: 10px 10px 40px 10px;
+    }
+
+    .phatabox-body h3 {
+      font-size: 20px;
+      margin-top: 0;
+    }
+
+    .phata-footer i {
+      vertical-align: bottom;
+      margin-right: 5px;
+      font-size: 22px;
+    }
+
+    .more-info img {
+      width: 94px;
+      text-align: center;
+      margin: auto;
+      display: block;
+    }
+
+    .more-info h3 {
+      color: #878787;
+      font-size: 14px;
+      margin-top: 35px;
+      margin-bottom: 5px;
+    }
+
+    .more-info p {
+      font-size: 12px;
+      color: #878787;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .more-info a {
+      text-align: center;
+      display: block;
+      font-size: 14px;
+      color: rgba(188, 51, 51, 0.6);
+      margin-top: 30px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div>
+    <div class="header">
+      <div class="header__logo-container">
+        <img class="header__logo" src="@routes.Assets.versioned("/images/Savy-logo-White-tall.png")">
+        <p class="header__strapline">Your personal data account</p>
+      </div>
+
+      <div class="header__nav">
+        <a href="https://savy.io/login" class="header__button-login">Sign in</a>
+        <a href="https://savy.io/register" class="header__button-register">Register</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero__box">
+        <img class="hero__profile-image" src="@routes.Assets.versioned("/images/user-account-icon.svg")">
+
+        <h1 class="hero__name">You’ve stumbled across an available<br><span class="savy-domain">Savy account domain</span></h1>
+
+        <a href="https://savy.io/" class="header__button-why">Why Would I Want One</a>
+        <a href="https://savy.io/" class="header__button-savy">Get a Savy Account</a>
+
+      </div>
+    </div>
+  </div>
+
+</body>

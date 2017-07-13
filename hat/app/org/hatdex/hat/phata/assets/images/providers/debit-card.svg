@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="150px" viewBox="0 0 150 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.2 (39069) - http://www.bohemiancoding.com/sketch -->
+    <title>debit-card</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="debit-card">
+            <g id="debitcard-icon" transform="translate(25.000000, 35.000000)">
+                <path d="M90,0 C95.55,0 100,4.45 100,10 L100,70 C100,75.55 95.55,80 90,80 L10,80 C4.45,80 0,75.55 0,70 L0.05,10 C0.05,4.45 4.45,0 10,0 L90,0 Z M10.1265823,20.3174603 L89.8734177,20.3174603 L89.8734177,10.1587302 L10.1265823,10.1587302 L10.1265823,20.3174603 Z M10.1265823,71.1111111 L89.8734177,71.1111111 L89.8734177,40.6349206 L10.1265823,40.6349206 L10.1265823,71.1111111 Z" id="Page-1" fill="#14223E" fill-rule="nonzero"></path>
+                <g id="DEBIT" transform="translate(30.000000, 21.000000)" font-size="13" font-family="OpenSans-Bold, Open Sans" fill="#FFFFFF" font-weight="bold">
+                    <text>
+                        <tspan x="0" y="14">DEBIT</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
