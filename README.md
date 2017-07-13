@@ -124,3 +124,4 @@ keypair used by the HAT for its token operations
 ## License
 
 [HAT including HAT Schema and API] is licensed under [AGPL - GNU AFFERO GENERAL PUBLIC LICENSE](https://github.com/Hub-of-all-Things/HAT/blob/master/LICENSE/AGPL)
+
