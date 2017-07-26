@@ -49,7 +49,7 @@ class NotablesService @Inject() (bundleService: BundleService, dataService: Data
   private implicit def hatServer2db(implicit hatServer: HatServer): Database = hatServer.db
 
   def getPublicNotes()(implicit server: HatServer): Future[Seq[Notable]] = {
-    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("rumpel", "notablesv1")), None).map(_.headOption)
+    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("savy", "notablesv1")), None).map(_.headOption)
 
     val eventualNotableRecords = eventualMaybeProfileTable flatMap { maybeTable =>
       FutureTransformations.transform(maybeTable.map(getTableValues))

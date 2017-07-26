@@ -71,7 +71,7 @@ class PhataSpec extends PlaySpecification with Mockito {
   //
   //      status(result) must equalTo(OK)
   //      contentAsString(result) must contain("MarketSquare")
-  //      contentAsString(result) must contain("Rumpel")
+  //      contentAsString(result) must contain("Savy")
   //    }
   //  }
 

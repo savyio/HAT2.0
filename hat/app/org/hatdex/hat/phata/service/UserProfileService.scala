@@ -46,7 +46,7 @@ class UserProfileService @Inject() (bundleService: BundleService, dataService: D
   private implicit def hatServer2db(implicit hatServer: HatServer): Database = hatServer.db
 
   def getPublicProfile()(implicit server: HatServer): Future[(Boolean, Map[String, Map[String, String]])] = {
-    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("rumpel", "profile")), None).map(_.headOption)
+    val eventualMaybeProfileTable = bundleService.sourceDatasetTables(Seq(("savy", "profile")), None).map(_.headOption)
     val eventualMaybeFacebookTable = bundleService.sourceDatasetTables(Seq(("facebook", "profile_picture")), None).map(_.headOption)
     val eventualProfileRecord = eventualMaybeProfileTable flatMap { maybeTable =>
       FutureTransformations.transform(maybeTable map getProfileTable)
