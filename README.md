@@ -125,3 +125,19 @@ keypair used by the HAT for its token operations
 
 [HAT including HAT Schema and API] is licensed under [AGPL - GNU AFFERO GENERAL PUBLIC LICENSE](https://github.com/Hub-of-all-Things/HAT/blob/master/LICENSE/AGPL)
 
+
+### Process for updating Hat and savy browser
+* git initialize submodule
+`git submodule init frontend`
+`git submodule update frontend`
+
+
+* inside frontend `git pull origin master`
+( can checkout branches in submodule)  but in proper flow will always be on master
+* after making changes on savy-browser (any branch), go to hat2.0
+* make any changes on savy browser, push to master (merge req)
+* update submodule on hat 2.0
+* cd frontend, git fetch inside submdule folder, commit with new submodule hash id (root)
+* ./build-frontend.sh (copies into dist)
+* commit again with new build stuff
+* sbt compile (sanity check)
