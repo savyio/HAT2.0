@@ -52,7 +52,7 @@ GET           /api/v2/system/status                                org.hatdex.ha
 # PHATA routes
 GET           /assets/*file                                        @controllers.Assets.versioned(path="/public", file: Asset)
 GET           /hatlogin                                            org.hatdex.hat.phata.controllers.Phata.hatLogin(name: String, redirect: String)
-GET           /                                                    org.hatdex.hat.phata.controllers.Phata.savyIndex
+GET           /                                                    org.hatdex.hat.phata.controllers.Phata.rumpelIndex
 GET           /api/profile                                         org.hatdex.hat.phata.controllers.Phata.profile
 GET           /api/notables                                        org.hatdex.hat.phata.controllers.Phata.notables(id: Option[Int])
 
