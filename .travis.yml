@@ -41,6 +41,15 @@ env:
     - REPOSITORY_NAME=hubofallthings RUMPEL=hubofallthings
     - REPOSITORY_NAME=hubat RUMPEL=rumpel
 
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
+
+install:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+
 before_script:
   - psql -c "CREATE DATABASE testhatdb1;" -U postgres
   - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
@@ -54,11 +63,6 @@ before_script:
   - cp rumpel/styles.*.bundle.css stylesheets/styles.bundle.css
   - gzip --keep --force js/*.bundle.js
   - cd -
-
-# Use sed to replace the SSH URL with the public URL, then initialize submodules
-before_install:
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive
 
 script:
   - sbt clean
