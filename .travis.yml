@@ -2,16 +2,15 @@ language: scala
 
 dist: trusty
 
+sudo: required
+
+services:
+  - docker
+
 scala:
    - 2.11.8
 jdk:
   - oraclejdk8
-
-branches:
-  only:
-    - master
-    - testing
-    - dev
 
 addons:
   postgresql: "9.5"
@@ -21,9 +20,20 @@ cache:
   - $HOME/.sbt
   - $HOME/.ivy2
 
+branches:
+  only:
+    - master
+    - testing
+    - dev
+
 # Handle git submodules yourself
 git:
     submodules: false
+
+env:
+  - REPOSITORY_NAME=hubofallthings BAR=bar
+  - REPOSITORY_NAME=hubat BAR=bar
+#  - REPOSITORY_NAME=xtiva BAR=bar
 
 before_script:
   - psql -c "CREATE DATABASE testhatdb1;" -U postgres
@@ -35,13 +45,14 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
-
 script:
    - sbt clean
    - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
    - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
    - sbt coverageReport
    - sbt coverageAggregate
+   - sbt "project hat" docker:stage
+   - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .
 
 after_success:
   - sbt coveralls
