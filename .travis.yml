@@ -57,7 +57,6 @@ before_script:
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
   - cd ./hat/app/org/hatdex/hat/phata/assets/
   - aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
-  - mkdir js
   - cp ./rumpel/inline.*.bundle.js ./js/inline.bundle.js
   - cp ./rumpel/polyfills.*.bundle.js ./js/polyfills.bundle.js
   - cp ./rumpel/main.*.bundle.js ./js/main.bundle.js
