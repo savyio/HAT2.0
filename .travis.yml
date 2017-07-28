@@ -8,7 +8,8 @@ services:
   - docker
 
 scala:
-   - 2.11.8
+  - 2.11.8
+
 jdk:
   - oraclejdk8
 
@@ -31,14 +32,28 @@ git:
     submodules: false
 
 env:
-  - REPOSITORY_NAME=hubofallthings BAR=bar
-  - REPOSITORY_NAME=hubat BAR=bar
-#  - REPOSITORY_NAME=xtiva BAR=bar
+  global:
+    - RUMPEL_BUCKET=rumpelbucket
+    - AWS_DEFAULT_REGION=eu-west-1
+    - secure: rGkp2QHhU+T5VvIRYALgwCPkUqP64vZjVaUgmqt2B53N1hxLuJs3FMc9qdd3+0SJTTFndGSsGjANE6Nb6FZeEoT1OB8TQvW9ZOGZCbggpZLFfAEudZo4lzLBR0PASa7nJyyvlVaxuay7g6K0Llqm1Lfphd/1FAW6bmDORwJIbikak7ejfwAWoZCrzp5xmTsC7OZ6Th1dJ5HLCZhionPQ8jp1nEedrbC4a4ryop9D7vlF+zu7vxTd/ZHC41mKGUdrfCyzkWGhK58Ne1dNdHYiP/Arj30m0s36alkPsXeZnnfbWYqy+6u9KkR0Rt+cIgJALkIYY/aQQIqvREsaN4hcYn6DP02J8Yw0GUDDV+Mu1V+kCdWHI6izoJZjlGmZ6uXbABXbEiYFlp2j+JEa89B1diEL8sQ7qFShUs1/cUOGg1XYEyZq4ht8peIGhoTADHNFO+mSt6R8jxZThzD5YXJ7miAMvXCwENNEEZZQ32K7Ar2IREa99FLTpSSduQHz6TH8upZMICFHXwdM/Z2P72jELQ/cRBT3WkHGUm5pncOklu/zb1D7quvSm2sd97hVKczTxHM74XdBVhWEGEPpj+bzRhzKISDYlwDngCO08fv5HefqSbgewk0Ks+HhYb7aHOlmk5B568rymGD2VQJIGRD+Acyp1PrEyBNcVyfYtYAMHKw=
+    - secure: mXXvzrn94Nb6YWEskkdidDisSb2ncIX+8fnfBC7Z2zwgITHCa2kHva54fs8qMH5CAFTm6ROx+l3ejbYvUWiHQeLMefzXrnTicB7XAfYKkOfM2V5jmuweNFkn+AozZOos5vPfcuribrlHck57C9LcpkhkZARgNKaWskLFSTmwWjFRiaf0tqFm+8kaa01obu4SQLaYmyfmyUDVJga3L9HiZ8VybeaP3rYp0Z1vpX5+foqRmwFSHpcKiIrBjBzqMm/Tkf6R9gceXsCaZVmlfmyCuKxFos0Js0EwYX+xaduVKZU8xSwQ1p9m/r69qAlFQ2/Nd1iIYasTE1VY7O/FAIUz0N8S0R6SL0D5TwqNvS6lhUjPpn+vI3co5EvMtiVJ9E2ebBkKTvNJ1131rIwecIqUStDvCCFLMwuHDsSwtiAj/mTiuggK0dS4GGYFrTx5qxHR+9SUSGHIezgqEXXU3Ok9FPVRTNOxV97AMOQciXictroSX2Arpdho677/rpIkPnhJmxbUMe5x+TxnvyUdbMF3eDV22RlnJEp7wM12FrwVOUAYYDvpAg6RhCo3maV8e27en+DYWmP/oQaVnwWCkgYjKl+SdrNZf85gDdsPbU8yrVdNlpAeKfc6YgFSXdkyC06ma1t7BPgsyv7O25i0VgoFBbkhTQ/M2P599o0cGKuY8l4=
+  matrix:
+    - REPOSITORY_NAME=hubofallthings RUMPEL=hubofallthings
+    - REPOSITORY_NAME=hubat RUMPEL=rumpel
 
 before_script:
   - psql -c "CREATE DATABASE testhatdb1;" -U postgres
   - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
+  - cd ./hat/app/org/hatdex/hat/phata/assets/
+  - aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel
+  - cp  rumpel/inline.*.bundle.js js/inline.bundle.js
+  - cp rumpel/polyfills.*.bundle.js js/polyfills.bundle.js
+  - cp rumpel/main.*.bundle.js js/main.bundle.js
+  - cp rumpel/vendor.*.bundle.js js/vendor.bundle.js
+  - cp rumpel/styles.*.bundle.css stylesheets/styles.bundle.css
+  - gzip --keep --force js/*.bundle.js
+  - cd -
 
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
@@ -46,13 +61,13 @@ before_install:
   - git submodule update --init --recursive
 
 script:
-   - sbt clean
-   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
-   - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
-   - sbt coverageReport
-   - sbt coverageAggregate
-   - sbt "project hat" docker:stage
-   - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .
+  - sbt clean
+  - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
+  - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
+  - sbt coverageReport
+  - sbt coverageAggregate
+  - sbt "project hat" docker:stage
+  - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .
 
 after_success:
   - sbt coveralls
