@@ -76,7 +76,7 @@ script:
   - sbt coverageReport
   - sbt coverageAggregate
   - sbt "project hat" docker:stage
-  - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} . && cd-
+  - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} . && cd -
 
 after_success:
   - sbt coveralls
