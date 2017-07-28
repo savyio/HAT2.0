@@ -86,9 +86,8 @@ after_success:
 deploy:
   - provider: script
     script:
-      - env AWS_SECRET_ACCESS_KEY=${DEPLOY_AWS_SECRET_ACCESS_KEY} && env AWS_ACCESS_KEY_ID=${DEPLOY_AWS_ACCESS_KEY_ID}
-      - ECR_REPOSITORY=$(aws ecr describe-repositories --repository-name ${REPOSITORY_NAME} --query 'repositories[0].repositoryUri' --output text)
-      - eval $(aws ecr get-login --no-include-email)
+      - ECR_REPOSITORY=$(aws ecr describe-repositories --repository-name ${REPOSITORY_NAME} --query 'repositories[0].repositoryUri' --output text --aws-access-key ${DEPLOY_AWS_ACCESS_KEY_ID} --aws-secret-key ${DEPLOY_AWS_SECRET_ACCESS_KEY} )
+      - eval $(aws ecr get-login --no-include-email --aws-access-key ${DEPLOY_AWS_ACCESS_KEY_ID} --aws-secret-key ${DEPLOY_AWS_SECRET_ACCESS_KEY})
       - docker tag ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
       - docker push ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
     on:
