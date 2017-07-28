@@ -21,6 +21,12 @@ cache:
   - $HOME/.sbt
   - $HOME/.ivy2
 
+notifications:
+  slack:
+    secure: m77P/oPazWaem1QdYeCE3Qs/lSS1T4KGpX8g8VCHwABff09QWzTzHXEnYHnDNNDnwWJWC+CWIlfEIFcgUQDVBFYETSJ44HzopZBm2WJRTCMessaMBvALLqUyXprGxgrKcvBDPOWGP3fIeGBKAIdC/AiB82AJ7kXZWnoWrUwokdsrgwL4FzxjqnXuTAG1+mltdXcB3WVle7KqpeCOmJo5Kwg3dwDcJamcElyxIcJId2Lwg70NKNSLNupv3M2i2/GE8s6p2pVuPfynIJVmyYSBXUboQ4Y/zsL3iTHmsLD38L4avz4bvcHLPm7Lb0fUI0prwBEftjpiEZYNNSczLk1XfffFSrfAhmgT9HGmO4ra4Eeps4vsuaFAFD8CHjhnohg2Gp77Xzc43FTh3pmxDeb+K34a+yncGljFuneCF0vZRZQ5R7it/fsUBtNhYnwwS88GCG1L9ZyUKE2qwYVSwq4TyEHnTMvdxCeNzYV/Mnw+FjpvGO9uLCtVvvdZP4Tt+YqajPT+XgtcDPvoWb8MO2CoyMCnvFEU4nT87ks7hwxT+Hv5SsPU/XZdgm6ahelpwWWoNaMgs0nYRdVeV3kPEP3GSKeD/hOd/5UhFa7r9u5Ir9ZhjMrEi6eUgoOk8TMdXNHtTgxzO4AxVnrelCIbJQ4SH8LGqOLVJHWTF0mLVxcsBzE=
+    on_success: always # default: always
+    on_failure: change # default: always
+
 branches:
   only:
     - master
@@ -57,11 +63,7 @@ before_script:
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
   - cd ./hat/app/org/hatdex/hat/phata/assets/
   - aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
-  - cp ./rumpel/inline.*.bundle.js ./js/inline.bundle.js
-  - cp ./rumpel/polyfills.*.bundle.js ./js/polyfills.bundle.js
-  - cp ./rumpel/main.*.bundle.js ./js/main.bundle.js
-  - cp ./rumpel/vendor.*.bundle.js ./js/vendor.bundle.js
-  - cp ./rumpel/styles.*.bundle.css ./stylesheets/styles.bundle.css
+  - cp rumpel/*.js* js/
   - gzip --keep --force js/*.bundle.js
   - cp -r rumpel/assets .
   - rm -r rumpel
@@ -74,7 +76,7 @@ script:
   - sbt coverageReport
   - sbt coverageAggregate
   - sbt "project hat" docker:stage
-  - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .
+  - cd hat/target/docker/stage && docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} . && cd-
 
 after_success:
   - sbt coveralls
