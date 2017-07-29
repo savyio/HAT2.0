@@ -1,28 +1,26 @@
 language: scala
-
 dist: trusty
-
 sudo: required
-
-services:
-  - docker
-
 scala:
   - 2.11.8
-
 jdk:
   - oraclejdk8
 
+services:
+  - docker
 addons:
   postgresql: "9.5"
 
 cache:
   directories:
-  - $HOME/.sbt
-  - $HOME/.ivy2
+  - $HOME/.ivy2/cache
+  - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
 
 notifications:
   slack:
+    template:
+      - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
+      - "Build details: %{build_url}"
     rooms:
       secure: f10x2/Uu8gyami/QGXS4dVOehWAY9mAKWYchs6Wr92qgnCPW1ALpoZlRqQiVvjsjcByxjLuVz0NgUFT7RmPusV3OuVLpBetjb6J+55kWebhdAE7OlAhGgmhxLcdWFvBuql4hhN7GHfUNQv0wwabAHoiq/cbMC9uZYcJDdfznqAjSZvlb4t6zgGhNyCFJL0v1nTdJz64zo2SEUdwWFhaV7/k0wbpTjFytyySj0LVW5ymkApQD+Lqvn2KZBDMwtwrMH8derLLrqbj41UB7EsnGP4K7hh6HUOgf4aw2r46m/wFqTmwzgeD140iWslmDISprhSW2WAo5QG8hz0rKuywzHL/NB2WmRMF7Dg6tnG0zihVy+fJJ7CviVewC6DWUtHGZYENX6BNVImymAdVu2LIh+QrHUEjXlPRjBdH97ZEnSzc/RKIvVBRzyMZ5IAv4wZCuKHthPeTX17ZCp3mnL3BD/kXacabao0H0ot1fPaDBErmA5cp0STPh2OmPheKElLDoFHyXubeMPpicXTUkeFqnYTtrdLRgC+XvvHQegNkUO/rq/62BwC6ewSA7udHOj7w8fG9mSpOcEAsDbL7FOiqw64NVWMrTtWq0KaVyC+KESpaPgHWapbs9HCEFKdwtj+pygvilVDvqQDlp4KINYAhJynmATneh3T9Qa2Z2Juqrayw=
 
@@ -46,7 +44,7 @@ env:
     - secure: garvO7sZMrDyhJ/LroK5SlidZCCBRa868Ebmuwwv75vlqeablbQk0LKEFqk6WjO428TIsu+JT0fkrg8eVoJPYO1n6/GhjtI9R4TgRNWcsoaFZe1RdCJkZoJemaeXkDomq34ZKRwnl7QsWeKInqtwDl3EJwoALaQjPPXEsrO20uodLKD8zFhCf89uQ4HIW6kAXJHTQSXByjkuRenhnyQ4nM/ixLnHZ+auJ/NG2RFUPADxRjpTNWcKoqvVh7QGzvYCiahDSaY669bZnLmTzOMH1EtVf8UPDFyHM56Pgq3a/OdOU4sxhSIdf3C+pbD8XV4lmU3gE/OLbybkk87YsU4J5iZLr552Dkm+g0ak2AnF4lxQwzm0sN/Q76eZRGpcBacncCLRlLK1kmWlfoJ6RrQTPRMBmNIzveCZ9gSY49AWEMUSn7ZG9F+MxCYnVAWlWDAEhKfQLYpHACa/GbGgvBaek6wG8vaeTMeBEVunpb3lsgQJ7fNBVtQ4vcn++0be1kW3+bAmPlviDJ+myey2O2uk1f5/T3k0s7UhbFcTzfN7HJ+2eIpg1Hp0FbmVEJvZVmE6TE8tiF0UwAJzbKDeU2HwGg8dXBbpKn/GWm70R1yytOCls4Mmndfxq75tnh9/ZRK7ihpa+TDg/xAjWqREGo1nHhObmY5L3rWxptyWKPgdVeA=
   matrix:
 #    - REPOSITORY_NAME=hubofallthings RUMPEL=hubofallthings
-#    - REPOSITORY_NAME=hubat RUMPEL=hubat
+    - REPOSITORY_NAME=surreycode RUMPEL=surreycode
     - REPOSITORY_NAME=xtiva RUMPEL=xtiva
 
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
@@ -62,24 +60,27 @@ before_script:
   - psql -c "CREATE DATABASE testhatdb1;" -U postgres
   - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
-  - cd ./hat/app/org/hatdex/hat/phata/assets/
-  - aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
-  - cp rumpel/*.js* js/;
-    gzip --keep --force js/*.bundle.js
-  - cp -r rumpel/assets/* .
-  - rm -r rumpel
-  - cd -
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+      cd ./hat/app/org/hatdex/hat/phata/assets/;
+      aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive;
+      cp rumpel/*.js* js/;
+      gzip --keep --force js/*.bundle.js
+      cp -r rumpel/assets/* .
+      rm -r rumpel
+      cd -
+    fi
 
 script:
   - sbt clean
   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
   - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
-  - sbt coverageReport && sbt coverageAggregate
+  - sbt coverageReport && sbt coverageAggregate && sbt coveralls
   - sbt "project hat" docker:stage
-  - docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} hat/target/docker/stage
+  - docker build -t ${REPOSITORY_NAME}/hat:$(git rev-parse --short HEAD) hat/target/docker/stage
 
 after_success:
-  - sbt coveralls
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
 before_deploy:
   - unset AWS_SECRET_ACCESS_KEY;
@@ -88,12 +89,12 @@ before_deploy:
     export AWS_ACCESS_KEY_ID=$DEPLOY_AWS_ACCESS_KEY_ID;
     ECR_REPOSITORY=$(aws ecr describe-repositories --repository-name ${REPOSITORY_NAME} --query 'repositories[0].repositoryUri' --output text);
     eval $(aws ecr get-login --no-include-email)
-  - docker tag ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
+  - docker tag ${REPOSITORY_NAME}/hat:$(git rev-parse --short HEAD) ${ECR_REPOSITORY}:$(git rev-parse --short HEAD)
 
 deploy:
   - provider: script
     script:
-      - docker push ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
+      - docker push ${ECR_REPOSITORY}:$(git rev-parse --short HEAD)
     skip_cleanup: true
     on:
       repo: Hub-of-all-Things/HAT2.0
