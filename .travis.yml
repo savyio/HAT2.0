@@ -81,24 +81,22 @@ script:
   - cd hat/target/docker/stage;
     docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .;
     cd -
+
+after_success:
+  - sbt coveralls
+
+before_deploy:
   - unset AWS_SECRET_ACCESS_KEY;
     export AWS_SECRET_ACCESS_KEY=$DEPLOY_AWS_SECRET_ACCESS_KEY;
     unset AWS_ACCESS_KEY_ID;
     export AWS_ACCESS_KEY_ID=$DEPLOY_AWS_ACCESS_KEY_ID;
     ECR_REPOSITORY=$(aws ecr describe-repositories --repository-name ${REPOSITORY_NAME} --query 'repositories[0].repositoryUri' --output text);
     eval $(aws ecr get-login --no-include-email)
-
-after_success:
-  - sbt coveralls
+  - docker tag ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
 
 deploy:
   - provider: script
     script:
-      - export AWS_SECRET_ACCESS_KEY=$DEPLOY_AWS_SECRET_ACCESS_KEY;
-        export AWS_ACCESS_KEY_ID=$DEPLOY_AWS_ACCESS_KEY_ID;
-        ECR_REPOSITORY=$(aws ecr describe-repositories --repository-name ${REPOSITORY_NAME} --query 'repositories[0].repositoryUri' --output text);
-        eval $(aws ecr get-login --no-include-email)
-      - docker tag ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
       - docker push ${ECR_REPOSITORY}:${TRAVIS_COMMIT}
     skip_cleanup: true
     on:
