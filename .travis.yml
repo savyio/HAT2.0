@@ -60,10 +60,11 @@ before_script:
   - psql -c "CREATE DATABASE testhatdb1;" -U postgres
   - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      cd ./hat/app/org/hatdex/hat/phata/assets/;
-      aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive;
-      cp rumpel/*.js* js/;
+  - |
+    if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+      cd ./hat/app/org/hatdex/hat/phata/assets/
+      aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
+      cp rumpel/*.js* js/
       gzip --keep --force js/*.bundle.js
       cp -r rumpel/assets/* .
       rm -r rumpel
