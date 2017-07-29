@@ -23,9 +23,8 @@ cache:
 
 notifications:
   slack:
-    secure: m77P/oPazWaem1QdYeCE3Qs/lSS1T4KGpX8g8VCHwABff09QWzTzHXEnYHnDNNDnwWJWC+CWIlfEIFcgUQDVBFYETSJ44HzopZBm2WJRTCMessaMBvALLqUyXprGxgrKcvBDPOWGP3fIeGBKAIdC/AiB82AJ7kXZWnoWrUwokdsrgwL4FzxjqnXuTAG1+mltdXcB3WVle7KqpeCOmJo5Kwg3dwDcJamcElyxIcJId2Lwg70NKNSLNupv3M2i2/GE8s6p2pVuPfynIJVmyYSBXUboQ4Y/zsL3iTHmsLD38L4avz4bvcHLPm7Lb0fUI0prwBEftjpiEZYNNSczLk1XfffFSrfAhmgT9HGmO4ra4Eeps4vsuaFAFD8CHjhnohg2Gp77Xzc43FTh3pmxDeb+K34a+yncGljFuneCF0vZRZQ5R7it/fsUBtNhYnwwS88GCG1L9ZyUKE2qwYVSwq4TyEHnTMvdxCeNzYV/Mnw+FjpvGO9uLCtVvvdZP4Tt+YqajPT+XgtcDPvoWb8MO2CoyMCnvFEU4nT87ks7hwxT+Hv5SsPU/XZdgm6ahelpwWWoNaMgs0nYRdVeV3kPEP3GSKeD/hOd/5UhFa7r9u5Ir9ZhjMrEi6eUgoOk8TMdXNHtTgxzO4AxVnrelCIbJQ4SH8LGqOLVJHWTF0mLVxcsBzE=
-    on_success: always # default: always
-    on_failure: change # default: always
+    rooms:
+      secure: f10x2/Uu8gyami/QGXS4dVOehWAY9mAKWYchs6Wr92qgnCPW1ALpoZlRqQiVvjsjcByxjLuVz0NgUFT7RmPusV3OuVLpBetjb6J+55kWebhdAE7OlAhGgmhxLcdWFvBuql4hhN7GHfUNQv0wwabAHoiq/cbMC9uZYcJDdfznqAjSZvlb4t6zgGhNyCFJL0v1nTdJz64zo2SEUdwWFhaV7/k0wbpTjFytyySj0LVW5ymkApQD+Lqvn2KZBDMwtwrMH8derLLrqbj41UB7EsnGP4K7hh6HUOgf4aw2r46m/wFqTmwzgeD140iWslmDISprhSW2WAo5QG8hz0rKuywzHL/NB2WmRMF7Dg6tnG0zihVy+fJJ7CviVewC6DWUtHGZYENX6BNVImymAdVu2LIh+QrHUEjXlPRjBdH97ZEnSzc/RKIvVBRzyMZ5IAv4wZCuKHthPeTX17ZCp3mnL3BD/kXacabao0H0ot1fPaDBErmA5cp0STPh2OmPheKElLDoFHyXubeMPpicXTUkeFqnYTtrdLRgC+XvvHQegNkUO/rq/62BwC6ewSA7udHOj7w8fG9mSpOcEAsDbL7FOiqw64NVWMrTtWq0KaVyC+KESpaPgHWapbs9HCEFKdwtj+pygvilVDvqQDlp4KINYAhJynmATneh3T9Qa2Z2Juqrayw=
 
 branches:
   only:
@@ -65,8 +64,8 @@ before_script:
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
   - cd ./hat/app/org/hatdex/hat/phata/assets/
   - aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
-  - cp rumpel/*.js* js/
-  - gzip --keep --force js/*.bundle.js
+  - cp rumpel/*.js* js/;
+    gzip --keep --force js/*.bundle.js
   - cp -r rumpel/assets/* .
   - rm -r rumpel
   - cd -
@@ -74,13 +73,10 @@ before_script:
 script:
   - sbt clean
   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
-#  - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
-#  - sbt coverageReport
-#  - sbt coverageAggregate
+  - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
+  - sbt coverageReport && sbt coverageAggregate
   - sbt "project hat" docker:stage
-  - cd hat/target/docker/stage;
-    docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} .;
-    cd -
+  - docker build -t ${REPOSITORY_NAME}/hat:${TRAVIS_COMMIT} hat/target/docker/stage
 
 after_success:
   - sbt coveralls
