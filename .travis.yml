@@ -75,11 +75,11 @@ script:
   - sbt clean
   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
   - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
-  - sbt coverageReport && sbt coverageAggregate && sbt coveralls
   - sbt "project hat" docker:stage
   - docker build -t ${REPOSITORY_NAME}/hat:$(git rev-parse --short HEAD) hat/target/docker/stage
 
 after_success:
+  - sbt coverageReport && sbt coverageAggregate && sbt coveralls
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
