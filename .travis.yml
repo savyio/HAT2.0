@@ -46,6 +46,7 @@ env:
 #    - REPOSITORY_NAME=hubofallthings RUMPEL=hubofallthings
     - REPOSITORY_NAME=surreycode RUMPEL=surreycode
     - REPOSITORY_NAME=xtiva RUMPEL=xtiva
+    - REPOSITORY_NAME=hubat
 
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
@@ -61,7 +62,7 @@ before_script:
   - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
   - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
   - |
-    if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+    if [[ "$TRAVIS_PULL_REQUEST" = "false" || -z "$RUMPEL" ]]; then
       cd ./hat/app/org/hatdex/hat/phata/assets/
       aws s3 cp s3://${RUMPEL_BUCKET}/${RUMPEL} rumpel --recursive
       cp rumpel/*.js* js/
