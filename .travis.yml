@@ -20,7 +20,7 @@ notifications:
   slack:
     template:
       - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
-      - "Build details: %{build_url}"
+      - "Build %{commit}: %{commit_message}"
     rooms:
       secure: f10x2/Uu8gyami/QGXS4dVOehWAY9mAKWYchs6Wr92qgnCPW1ALpoZlRqQiVvjsjcByxjLuVz0NgUFT7RmPusV3OuVLpBetjb6J+55kWebhdAE7OlAhGgmhxLcdWFvBuql4hhN7GHfUNQv0wwabAHoiq/cbMC9uZYcJDdfznqAjSZvlb4t6zgGhNyCFJL0v1nTdJz64zo2SEUdwWFhaV7/k0wbpTjFytyySj0LVW5ymkApQD+Lqvn2KZBDMwtwrMH8derLLrqbj41UB7EsnGP4K7hh6HUOgf4aw2r46m/wFqTmwzgeD140iWslmDISprhSW2WAo5QG8hz0rKuywzHL/NB2WmRMF7Dg6tnG0zihVy+fJJ7CviVewC6DWUtHGZYENX6BNVImymAdVu2LIh+QrHUEjXlPRjBdH97ZEnSzc/RKIvVBRzyMZ5IAv4wZCuKHthPeTX17ZCp3mnL3BD/kXacabao0H0ot1fPaDBErmA5cp0STPh2OmPheKElLDoFHyXubeMPpicXTUkeFqnYTtrdLRgC+XvvHQegNkUO/rq/62BwC6ewSA7udHOj7w8fG9mSpOcEAsDbL7FOiqw64NVWMrTtWq0KaVyC+KESpaPgHWapbs9HCEFKdwtj+pygvilVDvqQDlp4KINYAhJynmATneh3T9Qa2Z2Juqrayw=
 
@@ -77,14 +77,17 @@ before_script:
 script:
   - sbt clean
   - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
-  - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
+  - |
+    if [[ "REPOSITORY_NAME" = "hubat" ]]; then
+      sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
+    fi
   - sbt "project hat" docker:stage
   - docker build -t ${REPOSITORY_NAME}/hat:$(git rev-parse --short HEAD) hat/target/docker/stage
 
 after_success:
-  - sbt coverageReport && sbt coverageAggregate && sbt coveralls
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - sbt coverageReport && sbt coverageAggregate && sbt coveralls
 
 before_deploy:
   - unset AWS_SECRET_ACCESS_KEY;
