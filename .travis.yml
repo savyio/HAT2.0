@@ -47,6 +47,7 @@ env:
     - REPOSITORY_NAME=surreycode RUMPEL=surreycode
     - REPOSITORY_NAME=xtiva RUMPEL=xtiva
     - REPOSITORY_NAME=hubat
+    - REPOSITORY_NAME=quensus RUMPEL=quensus
 
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
