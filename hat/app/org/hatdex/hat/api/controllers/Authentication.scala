@@ -39,6 +39,7 @@ import org.hatdex.hat.authentication._
 import org.hatdex.hat.phata.models.{ ApiPasswordChange, ApiPasswordResetRequest, MailTokenUser }
 import org.hatdex.hat.resourceManagement.{ HatServerProvider, _ }
 import org.hatdex.hat.utils.{ HatBodyParsers, HatMailer }
+import play.api.cache.Cached
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -49,6 +50,7 @@ import scala.concurrent.Future
 
 class Authentication @Inject() (
     val messagesApi: MessagesApi,
+    cached: Cached,
     configuration: Configuration,
     parsers: HatBodyParsers,
     hatServerProvider: HatServerProvider,
@@ -64,9 +66,15 @@ class Authentication @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def publicKey(): Action[AnyContent] = UserAwareAction.async { implicit request =>
-    val publicKey = hatServerProvider.toString(request.dynamicEnvironment.publicKey)
-    Future.successful(Ok(publicKey))
+  val indefiniteSuccessCaching = cached
+    .status(req => s"${req.host}${req.path}", 200)
+    .includeStatus(404, 600)
+
+  def publicKey(): EssentialAction = indefiniteSuccessCaching {
+    UserAwareAction.async { implicit request =>
+      val publicKey = hatServerProvider.toString(request.dynamicEnvironment.publicKey)
+      Future.successful(Ok(publicKey))
+    }
   }
 
   def validateToken(): Action[AnyContent] = SecuredAction.async { implicit request =>
