@@ -24,7 +24,7 @@
 
 package org.hatdex.hat.authentication
 
-import javax.inject.Inject
+import javax.inject.{ Inject, Named }
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
@@ -34,14 +34,14 @@ import org.hatdex.hat.authentication.Implicits._
 import org.hatdex.hat.resourceManagement.HatServer
 import org.hatdex.hat.utils.Utils
 import play.api.Logger
-import play.api.cache.CacheApi
+import play.api.cache.{ CacheApi, NamedCache }
 
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
 class PasswordInfoService @Inject() (
   implicit
-  val cache: CacheApi,
+  @NamedCache("user-cache") val cache: CacheApi,
   userService: AuthUserServiceImpl)
     extends DelegableAuthInfoDAO[PasswordInfo, HatServer] with DalExecutionContext {
 
