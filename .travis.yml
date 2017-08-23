@@ -1,5 +1,7 @@
 language: scala
 
+dist: trusty
+
 scala:
    - 2.11.8
 jdk:
@@ -22,15 +24,22 @@ cache:
 # Handle git submodules yourself
 git:
     submodules: false
+
+before_script:
+  - psql -c "CREATE DATABASE testhatdb1;" -U postgres
+  - psql -c "CREATE USER testhatdb1 WITH PASSWORD 'testing';" -U postgres
+  - psql -c "GRANT CREATE ON DATABASE testhatdb1 TO testhatdb1" -U postgres
+
 # Use sed to replace the SSH URL with the public URL, then initialize submodules
 before_install:
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-    - git submodule update --init --recursive
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
+
 
 script:
    - sbt clean
    - sbt ++$TRAVIS_SCALA_VERSION compile test:compile
-   - sbt coverage "testOnly hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
+   - sbt coverage "testOnly org.hatdex.hat.api.*" -Dconfig.file=src/main/resources/application.test.conf
 
 after_success:
   - sbt coveralls

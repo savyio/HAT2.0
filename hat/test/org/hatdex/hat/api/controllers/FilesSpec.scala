@@ -28,7 +28,7 @@ import java.io.StringReader
 import java.util.UUID
 
 import akka.stream.Materializer
-import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.{ AmazonS3, AmazonS3Client }
 import com.atlassian.jwt.core.keys.KeyUtils
 import com.google.inject.AbstractModule
 import com.mohiva.play.silhouette.api.{ Environment, LoginInfo }
@@ -37,7 +37,8 @@ import net.codingwell.scalaguice.ScalaModule
 import org.hatdex.hat.api.models.{ ApiHatFile, ApiHatFilePermissions, HatFileStatus }
 import org.hatdex.hat.api.service._
 import org.hatdex.hat.authentication.HatApiAuthEnvironment
-import org.hatdex.hat.authentication.models.{ DataCredit, DataDebitOwner, HatUser, Owner }
+import org.hatdex.hat.api.models.{ DataCredit, DataDebitOwner, Owner }
+import org.hatdex.hat.authentication.models.HatUser
 import org.hatdex.hat.dal.SchemaMigration
 import org.hatdex.hat.dal.SlickPostgresDriver.backend.Database
 import org.hatdex.hat.resourceManagement.{ FakeHatConfiguration, FakeHatServerProvider, HatServer, HatServerProvider }
@@ -292,7 +293,7 @@ class FilesSpec(implicit ee: ExecutionEnv) extends PlaySpecification with Mockit
       }
 
       redirectLocation(result) must beSome
-      redirectLocation(result).get must startWith("https://hat-storage-test.s3.amazonaws.com/hat.hubofallthings.net/testFile?AWSAccessKeyId=testAwsAccessKey&Expires=")
+      redirectLocation(result).get must startWith("https://hat-storage-test.s3-eu-west-1.amazonaws.com/hat.hubofallthings.net/testFile")
     }
 
     "Redirect to file url for permitted files files" in {
@@ -309,7 +310,7 @@ class FilesSpec(implicit ee: ExecutionEnv) extends PlaySpecification with Mockit
       } yield result
 
       redirectLocation(result) must beSome
-      redirectLocation(result).get must startWith("https://hat-storage-test.s3.amazonaws.com/hat.hubofallthings.net/testFile?AWSAccessKeyId=testAwsAccessKey&Expires=")
+      redirectLocation(result).get must startWith("https://hat-storage-test.s3-eu-west-1.amazonaws.com/hat.hubofallthings.net/testFile")
     }
   }
 
@@ -390,7 +391,8 @@ trait FilesContext extends Scope {
   val devHatMigrations = Seq(
     "evolutions/hat-database-schema/11_hat.sql",
     "evolutions/hat-database-schema/12_hatEvolutions.sql",
-    "evolutions/hat-database-schema/13_liveEvolutions.sql")
+    "evolutions/hat-database-schema/13_liveEvolutions.sql",
+    "evolutions/hat-database-schema/14_newHat.sql")
 
   def databaseReady: Future[Unit] = {
     val schemaMigration = application.injector.instanceOf[SchemaMigration]
@@ -416,7 +418,7 @@ trait FilesContext extends Scope {
       bind[Environment[HatApiAuthEnvironment]].toInstance(environment)
       bind[HatServerProvider].toInstance(new FakeHatServerProvider(hatServer))
       bind[AwsS3Configuration].toInstance(fileManagerS3Mock.s3Configuration)
-      bind[AmazonS3Client].toInstance(fileManagerS3Mock.mockS3client)
+      bind[AmazonS3].toInstance(fileManagerS3Mock.mockS3client)
       bind[FileManager].toInstance(new FileManagerS3(fileManagerS3Mock.s3Configuration, fileManagerS3Mock.mockS3client))
     }
   }
