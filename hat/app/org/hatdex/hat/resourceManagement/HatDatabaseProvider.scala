@@ -27,10 +27,11 @@ package org.hatdex.hat.resourceManagement
 import javax.inject.{ Inject, Singleton }
 
 import org.hatdex.hat.dal.SchemaMigration
-import org.hatdex.hat.dal.SlickPostgresDriver.backend.Database
+import org.hatdex.libs.dal.SlickPostgresDriver.api.Database
 import play.api.cache.CacheApi
 import play.api.libs.ws.WSClient
 import play.api.{ Configuration, Logger }
+import slick.util.AsyncExecutor
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -68,12 +69,13 @@ class HatDatabaseProviderMilliner @Inject() (
     val schemaMigration: SchemaMigration) extends HatDatabaseProvider with MillinerHatSignup {
   val logger = Logger(this.getClass)
 
+  val slickAsyncExecutor = AsyncExecutor(s"slick", 50, 2000)
+
   def database(hat: String)(implicit ec: ExecutionContext): Future[Database] = {
     getHatSignup(hat) map { signup =>
-      logger.debug(s"Getting $hat database for ${signup.databaseServer} and ${signup.database}")
       val databaseUrl = s"jdbc:postgresql://${signup.databaseServer.get.host}:${signup.databaseServer.get.port}/${signup.database.get.name}"
-      logger.debug(s"For URL $databaseUrl and ${signup.database.get.name}:${signup.database.get.password}")
-      Database.forURL(databaseUrl, signup.database.get.name, signup.database.get.password, driver = "org.postgresql.Driver")
+      //      val executor = AsyncExecutor(hat, numThreads = 3, queueSize = 1000)
+      Database.forURL(databaseUrl, signup.database.get.name, signup.database.get.password, driver = "org.postgresql.Driver", executor = slickAsyncExecutor)
     }
   }
 }
