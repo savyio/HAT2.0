@@ -69,11 +69,13 @@ class HatDatabaseProviderMilliner @Inject() (
     val schemaMigration: SchemaMigration) extends HatDatabaseProvider with MillinerHatSignup {
   val logger = Logger(this.getClass)
 
+  val slickAsyncExecutor = AsyncExecutor(s"slick", 50, 2000)
+
   def database(hat: String)(implicit ec: ExecutionContext): Future[Database] = {
     getHatSignup(hat) map { signup =>
       val databaseUrl = s"jdbc:postgresql://${signup.databaseServer.get.host}:${signup.databaseServer.get.port}/${signup.database.get.name}"
       //      val executor = AsyncExecutor(hat, numThreads = 3, queueSize = 1000)
-      Database.forURL(databaseUrl, signup.database.get.name, signup.database.get.password, driver = "org.postgresql.Driver", executor = AsyncExecutor.default())
+      Database.forURL(databaseUrl, signup.database.get.name, signup.database.get.password, driver = "org.postgresql.Driver", executor = slickAsyncExecutor)
     }
   }
 }
